@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Email.Models;
+using Email.Repository;
 
 namespace Email.Controllers
 {
@@ -32,6 +33,14 @@ namespace Email.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public ActionResult<dynamic> Auth([FromBody]UsuarioModel usuario) {
+            var login = UsuarioRepository.Get(usuario.Email, usuario.Senha);
+            if (login == null) {
+                return NotFound(new { mensagem = "Usuario ou senha inválidos." });
+            }
+            return login;
         }
     }
 }
